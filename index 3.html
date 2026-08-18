@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoBit - Super Admin Master Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .nav-active {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #10b981 !important;
+            border-left: 4px solid #10b981;
+        }
+        .tab-content {
+            animation: fadeIn 0.25s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased bg-slate-50 min-h-screen flex flex-col md:flex-row">
+
+    <aside class="w-full md:w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col justify-between min-h-screen border-r border-slate-800">
+        <div>
+            <!-- Logo Header with logo.png and automatic fallback -->
+            <div class="p-5 flex items-center justify-between border-b border-slate-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center p-1.5 shadow-lg shadow-emerald-500/10 overflow-hidden">
+                        <!-- Direct editable logo tag: drop logo.png in your project folder -->
+                        <img src="logo.png" id="ecobit-main-logo" alt="EcoBit Logo" class="w-full h-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-leaf text-emerald-400 font-black text-xl\'></i>';">
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-black tracking-tight text-white flex items-center gap-1.5">
+                            EcoBit <span class="text-[10px] bg-emerald-500/20 text-emerald-400 font-bold px-1.5 py-0.5 rounded uppercase">Master</span>
+                        </h1>
+                        <p class="text-[11px] text-slate-400 font-medium">Super Admin Platform</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="p-3 space-y-6 text-xs font-medium">
+                
+                <!-- Section 1: RESUMEN GENERAL -->
+                <div>
+                    <div class="text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2 px-3">
+                        Vista Consolidada
+                    </div>
+                    <div class="space-y-1">
+                        <button onclick="switchTab('resumen')" id="nav-resumen" class="nav-btn nav-active w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800/60 hover:text-white transition">
+                            <i class="fa-solid fa-chart-pie w-5 text-center text-emerald-400"></i>
+                            <span>Resumen General</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section 2: GESTIÓN DE CLIENTES -->
+                <div>
+                    <div class="text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2 px-3">
+                        Gestión Enterprise & Institucional
+                    </div>
+                    <div class="space-y-1">
+                        <button onclick="switchTab('empresas')" id="nav-empresas" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800/60 hover:text-white transition">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-building w-5 text-center"></i>
+                                <span>Empresas e Instituciones</span>
+                            </div>
+                            <span class="text-xs bg-slate-800 px-2 py-0.5 rounded-full text-emerald-400 font-semibold">7</span>
+                        </button>
+                        <button onclick="switchTab('impacto')" id="nav-impacto" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800/60 hover:text-white transition">
+                            <i class="fa-solid fa-leaf w-5 text-center text-emerald-400"></i>
+                            <span>Impacto & CO2e Evitado</span>
+                        </button>
+                        <button onclick="switchTab('usuarios')" id="nav-usuarios" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800/60 hover:text-white transition">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-users w-5 text-center"></i>
+                                <span>Usuarios y Colaboradores</span>
+                            </div>
+                            <span class="text-xs bg-slate-800 px-2 py-0.5 rounded-full text-slate-300">4,156</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section 3: RED DE CANJE & ECONOMÍA ECOBIT -->
+                <div>
+                    <div class="text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2 px-3">
+                        Red Comercial & Tokenómica
+                    </div>
+                    <div class="space-y-1">
+                        <button onclick="switchTab('centros')" id="nav-centros" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800/60 hover:text-white transition">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-store w-5 text-center"></i>
+                                <span>Centros Comerciales</span>
+                            </div>
+                            <span class="text-xs bg-slate-800 px-2 py-0.5 rounded-full text-purple-400 font-semibold">1,240</span>
+                        </button>
+                        <button onclick="switchTab('ecobits')" id="nav-ecobits" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800/60 hover:text-white transition">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-coins w-5 text-center"></i>
+                                <span>Movimiento EcoBits</span>
+                            </div>
+                            <span class="text-xs bg-slate-800 px-2 py-0.5 rounded-full text-amber-400 font-semibold">15.4k</span>
+                        </button>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+
+        <!-- Super Admin Profile Footer -->
+        <div class="p-4 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-full bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 flex items-center justify-center font-bold text-xs">
+                    EA
+                </div>
+                <div>
+                    <div class="text-xs font-bold text-white">EcoBit Admin Team</div>
+                    <div class="text-[10px] text-emerald-400 font-medium">Control Central Huancayo/Hvca</div>
+                </div>
+            </div>
+            <button onclick="showToast('Modo Super Admin Activo')" class="text-slate-500 hover:text-slate-300" title="Super Admin Seguridad">
+                <i class="fa-solid fa-shield-halved"></i>
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto min-h-screen flex flex-col">
+        
+        <!-- TOP HEADER BAR -->
+        <header class="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-20 shadow-sm">
+            <div class="flex items-center space-x-3">
+                <button class="md:hidden text-slate-600 focus:outline-none">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+                <div>
+                    <h2 class="text-lg font-extrabold text-slate-900" id="current-page-title">
+                        Consolidado General EcoBit
+                    </h2>
+                    <p class="text-xs text-slate-500" id="current-page-subtitle">
+                        Monitoreo en tiempo real de entidades afiliadas, red de canjes y huella ecológica evitada.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Global Actions & Status Badge -->
+            <div class="flex items-center space-x-3">
+                <div class="hidden lg:flex items-center space-x-2 bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded-lg border border-emerald-200 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span>Red Regional Huancayo - Huancavelica Operativa</span>
+                </div>
+                
+                <button onclick="syncDataInRealTime()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2 rounded-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-rotate text-slate-500" id="refresh-icon"></i>
+                    <span>Actualizar y Sincronizar</span>
+                </button>
+
+                <button onclick="showToast('Exportando Reporte Consolidado Super Admin')" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-2 rounded-lg transition flex items-center space-x-2 shadow-sm">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Exportar Data Global</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="p-6 space-y-6 flex-1">
+
+            <!-- TAB 1: RESUMEN GENERAL (SUPER ADMIN OVERVIEW) -->
+            <div id="tab-resumen" class="tab-content space-y-6">
+                
+                <!-- 6 PRIMARY PLATFORM STAT CARDS -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    
+                    <!-- Card 1: Empresas / Instituciones -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-building"></i>
+                            </div>
+                            <span class="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-semibold">Instituciones</span>
+                        </div>
+                        <div class="text-2xl font-black text-slate-900">7</div>
+                        <p class="text-[11px] text-slate-500 mt-1">Empresas / ONGs / Munis</p>
+                    </div>
+
+                    <!-- Card 2: Usuarios / Colaboradores -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-semibold">Red Activa</span>
+                        </div>
+                        <div class="text-2xl font-black text-slate-900">4,156</div>
+                        <p class="text-[11px] text-slate-500 mt-1">Colaboradores & Vecinos</p>
+                    </div>
+
+                    <!-- Card 3: Centros Comerciales -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-store"></i>
+                            </div>
+                            <span class="text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded font-semibold">Red Aliada</span>
+                        </div>
+                        <div class="text-2xl font-black text-slate-900">1,240</div>
+                        <p class="text-[11px] text-slate-500 mt-1">Puntos de canje Hvca / Hyyo</p>
+                    </div>
+
+                    <!-- Card 4: EcoBits en Circulación -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-coins"></i>
+                            </div>
+                            <span class="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-semibold">Circulante</span>
+                        </div>
+                        <div class="text-2xl font-black text-slate-900">15,480</div>
+                        <p class="text-[11px] text-slate-500 mt-1">EcoBits listos para canje</p>
+                    </div>
+
+                    <!-- Card 5: CO2 Reducido (Goal > 100 Toneladas) -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-cloud-arrow-down"></i>
+                            </div>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-semibold" id="card-co2-badge">148.2 t</span>
+                        </div>
+                        <div class="text-2xl font-black text-emerald-600" id="kpi-co2-val">148.2 <span class="text-xs font-normal text-slate-600">t</span></div>
+                        <p class="text-[11px] text-slate-500 mt-1">CO2e Evitado Consolidado</p>
+                    </div>
+
+                    <!-- Card 6: Residuos Sólidos (Goal > 120 Toneladas) -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center text-sm">
+                                <i class="fa-solid fa-recycle"></i>
+                            </div>
+                            <span class="text-[10px] bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded font-semibold" id="card-waste-badge">136.8 t</span>
+                        </div>
+                        <div class="text-2xl font-black text-teal-600" id="kpi-waste-val">136.8 <span class="text-xs font-normal text-slate-600">t</span></div>
+                        <p class="text-[11px] text-slate-500 mt-1">Orgánicos e Inorgánicos</p>
+                    </div>
+
+                </div>
+
+                <!-- MAIN HIGHLIGHT HERO PANEL WITH SYSTEM ARCHITECTURE STYLE -->
+                <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-xl relative overflow-hidden border border-slate-800">
+                    <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
+                        <div class="max-w-2xl">
+                            <div class="flex items-center space-x-2 text-xs font-bold text-emerald-400 uppercase tracking-widest mb-2">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Metas de Sostenibilidad Súper-Superadas</span>
+                            </div>
+                            <h3 class="text-2xl font-black tracking-tight text-white mb-2">
+                                Red Ecológica EcoBit Central: Huancavelica & Huancayo
+                            </h3>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Hemos sobrepasado oficialmente los objetivos ambientales clave para la región central del Perú: más de <strong class="text-emerald-400 font-bold">148.2 Toneladas de CO2e evitadas</strong> (meta &gt; 100 t) y <strong class="text-teal-400 font-bold">136.8 Toneladas de residuos sólidos valorizados</strong> (meta &gt; 120 t) gracias a la sinergia de nuestras 7 instituciones aliadas y la red de 1,240 establecimientos.
+                            </p>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 bg-slate-800/80 p-4 rounded-xl border border-slate-700/60 w-full lg:w-auto">
+                            <div class="text-center px-3 border-r border-slate-700">
+                                <span class="text-[10px] text-slate-400 block uppercase font-bold">CO2e Evitado</span>
+                                <span class="text-xl font-black text-emerald-400">148.2 t</span>
+                                <span class="text-[9px] text-emerald-300 block">Logrado</span>
+                            </div>
+                            <div class="text-center px-3">
+                                <span class="text-[10px] text-slate-400 block uppercase font-bold">Residuos Val.</span>
+                                <span class="text-xl font-black text-teal-400">136.8 t</span>
+                                <span class="text-[9px] text-teal-300 block">Logrado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- Chart 1: Residuos Recolectados vs Valorizados -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-900">Evolución Consolidada de Residuos (kg)</h3>
+                                <p class="text-xs text-slate-500">Total recolectado vs valorizado (Orgánicos + Inorgánicos)</p>
+                            </div>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg font-semibold">Feb - Ago 2026</span>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="wasteChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Distribución por Tipo de Material -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-900">Composición de Residuos Valorizados</h3>
+                                <p class="text-xs text-slate-500">Clasificación en las 7 organizaciones aliadas</p>
+                            </div>
+                            <span class="text-xs bg-emerald-50 text-emerald-700 font-bold px-2.5 py-1 rounded-lg">136,800 kg Total</span>
+                        </div>
+                        <div class="h-64 flex items-center justify-center">
+                            <canvas id="materialDoughnutChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- TABLES & LIVE ACTIVITY STREAM -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Left 2 Cols: TOP INSTITUCIONES MÁS ACTIVAS CON BOTÓN COMUNICAR -->
+                    <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-900">Ránking de Instituciones y Tiempo de Implementación</h3>
+                                <p class="text-xs text-slate-500">Métrica de impacto y canal de contacto institucional directo</p>
+                            </div>
+                            <button onclick="switchTab('empresas')" class="text-xs text-emerald-600 font-bold hover:underline">
+                                Ver todas (7) &rarr;
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                                    <tr>
+                                        <th class="py-2.5 px-3">Organización / Entidad</th>
+                                        <th class="py-2.5 px-3">Ubicación</th>
+                                        <th class="py-2.5 px-3 text-center">Colaboradores</th>
+                                        <th class="py-2.5 px-3 text-right">Residuos Val.</th>
+                                        <th class="py-2.5 px-3 text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="top-companies-tbody" class="divide-y divide-slate-100">
+                                    <!-- Populated dynamically via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right Col: ACTIVIDAD DE CANJE EN TIEMPO REAL -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-sm font-bold text-slate-900">Últimos Canjes en Centros Comerciales</h3>
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-4">Redención de EcoBits en Huancayo y Huancavelica</p>
+                            
+                            <div class="space-y-3" id="live-redemptions-container">
+                                <!-- Dynamic JS render -->
+                            </div>
+                        </div>
+
+                        <button onclick="switchTab('ecobits')" class="w-full mt-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition text-center">
+                            Ver historial completo de EcoBits
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- TAB 2: CENTROS COMERCIALES Y PUNTOS DE CANJE (HUANCAVELICA & HUANCAYO) -->
+            <div id="tab-centros" class="tab-content hidden space-y-6">
+                
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs font-bold text-purple-600 uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-store"></i>
+                            <span>Red de Comercios Aliados EcoBit (1,240 Establecimientos)</span>
+                        </div>
+                        <h2 class="text-xl font-extrabold text-slate-900">Centros Comerciales y Puntos de Canje</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">
+                            Directorio central de 1,240 locales, galerías, mype y malls afiliados en Huancavelica y Huancayo habilitados para la aceptación de EcoBits.
+                        </p>
+                    </div>
+
+                    <!-- Enhanced Search & Multi-Filters -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="relative flex-1 sm:w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                            <input type="text" id="search-malls" onkeyup="filterMalls()" placeholder="Buscar en los 1,240 establecimientos..." class="w-full pl-8 pr-4 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                        </div>
+                        
+                        <select id="filter-mall-city" onchange="filterMalls()" class="text-xs bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                            <option value="ALL">Todas las ciudades (Hvca/Hyyo)</option>
+                            <option value="Huancayo">Huancayo</option>
+                            <option value="Huancavelica">Huancavelica</option>
+                            <option value="El Tambo">El Tambo</option>
+                            <option value="Chilca">Chilca</option>
+                        </select>
+
+                        <select id="filter-mall-status" onchange="filterMalls()" class="text-xs bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                            <option value="ALL">Todos los Estados</option>
+                            <option value="Verificado">Verificados</option>
+                            <option value="En Validación">En Validación</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Shopping Centers Grid Table -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <!-- High Volume Indicator Banner -->
+                    <div class="p-3.5 bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between text-xs gap-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <span class="font-bold">Base de Datos Central: 1,240 Comercios Afiliados Activos</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400" id="malls-db-count">Indexados 1,240 de 1,240 locales regional</span>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs text-slate-600 font-medium">
+                        <span id="malls-counter-text" class="font-bold text-slate-800">Mostrando registros 1 al 8 de 1,240 establecimientos</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-[11px] text-slate-400">Orden:</span>
+                            <select id="sort-malls" onchange="filterMalls()" class="text-xs bg-white border border-slate-300 rounded px-2 py-1 focus:outline-none">
+                                <option value="canjes_desc">Mayor Actividad (Canjes)</option>
+                                <option value="name_asc">Nombre (A-Z)</option>
+                                <option value="ecobits_desc">Más EcoBits Procesados</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 text-slate-700 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-200">
+                                <tr>
+                                    <th class="py-3 px-4">Centro Comercial / Establecimiento</th>
+                                    <th class="py-3 px-4">Ciudad / Ubicación Exacta</th>
+                                    <th class="py-3 px-4">Representante Autorizado</th>
+                                    <th class="py-3 px-4 text-center">Teléfono / Contacto</th>
+                                    <th class="py-3 px-4 text-right">Canjes del Mes</th>
+                                    <th class="py-3 px-4 text-right">EcoBits Procesados</th>
+                                    <th class="py-3 px-4 text-center">Estado Red</th>
+                                </tr>
+                            </thead>
+                            <tbody id="malls-tbody" class="divide-y divide-slate-100">
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- "Ver Más" Expandable & Pagination Bar -->
+                    <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-3">
+                        <div class="flex items-center space-x-1 text-xs text-slate-500 font-mono">
+                            <span>Página <strong class="text-slate-900" id="mall-page-num">1</strong> de <strong class="text-slate-900">155</strong> (1,240 items totales)</span>
+                        </div>
+
+                        <div class="flex items-center space-x-2">
+                            <button onclick="changeMallPage(-1)" class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-semibold hover:bg-slate-100 transition">
+                                &laquo; Anterior
+                            </button>
+                            
+                            <button id="btn-load-more-malls" onclick="loadMoreMalls()" class="text-xs bg-purple-600 hover:bg-purple-700 text-white font-bold px-4 py-2 rounded-lg transition shadow-sm flex items-center space-x-2">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                                <span>Ver Más Establecimientos (1,240 Totales)</span>
+                            </button>
+
+                            <button onclick="changeMallPage(1)" class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-semibold hover:bg-slate-100 transition">
+                                Siguiente &raquo;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 3: MOVIMIENTO DE ECOBITS -->
+            <div id="tab-ecobits" class="tab-content hidden space-y-6">
+                
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                        <div>
+                            <div class="flex items-center space-x-2 text-xs font-bold text-amber-600 uppercase tracking-wider mb-1">
+                                <i class="fa-solid fa-coins"></i>
+                                <span>Tokenómica & Flujo de Canje Regional</span>
+                            </div>
+                            <h2 class="text-xl font-extrabold text-slate-900">Histórico de Movimientos y Saldo de EcoBits</h2>
+                            <p class="text-xs text-slate-500">Historial completo por periodos mensuales de generación por reciclaje y consumo en comercios.</p>
+                        </div>
+
+                        <!-- 4-Month Filter -->
+                        <div class="flex items-center space-x-2 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+                            <label for="ecobits-month-filter" class="text-xs font-bold text-slate-600 pl-2">Periodo:</label>
+                            <select id="ecobits-month-filter" onchange="filterEcobitsPeriod(this.value)" class="text-xs bg-white border border-slate-300 rounded-lg px-3 py-1.5 font-bold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500">
+                                <option value="ALL_4">Últimos 4 Meses (Mayo - Ago 2026)</option>
+                                <option value="MAY_26">Mayo 2026</option>
+                                <option value="JUN_26">Junio 2026</option>
+                                <option value="JUL_26">Julio 2026</option>
+                                <option value="AGO_26">Agosto 2026 (En Curso)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Flow Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="p-4 bg-emerald-50/60 border border-emerald-200 rounded-xl">
+                            <span class="text-xs text-emerald-800 font-semibold block">EcoBits Generados (Periodo Seleccionado)</span>
+                            <span class="text-2xl font-black text-emerald-700 font-mono mt-1" id="stat-ecobits-generated">+777,900</span>
+                            <span class="text-[10px] text-emerald-600 block mt-1">Por reciclaje verificado en las 7 entidades</span>
+                        </div>
+
+                        <div class="p-4 bg-purple-50/60 border border-purple-200 rounded-xl">
+                            <span class="text-xs text-purple-800 font-semibold block">EcoBits Canjeados en Centros Comerciales</span>
+                            <span class="text-2xl font-black text-purple-700 font-mono mt-1" id="stat-ecobits-redeemed">-762,420</span>
+                            <span class="text-[10px] text-purple-600 block mt-1">En Real Plaza, Open Plaza, C.C. Manchego Muñoz, etc.</span>
+                        </div>
+
+                        <div class="p-4 bg-amber-50/60 border border-amber-200 rounded-xl">
+                            <span class="text-xs text-amber-800 font-semibold block">Saldo Circulante Disponible</span>
+                            <span class="text-2xl font-black text-amber-700 mt-1 font-mono">15,480.00 EB</span>
+                            <span class="text-[10px] text-amber-600 block mt-1">Listo para ser utilizado en el comercio regional</span>
+                        </div>
+                    </div>
+
+                    <!-- HISTORIAL DE LOS ÚLTIMOS 4 MESES -->
+                    <div class="mb-6">
+                        <h3 class="text-xs font-bold text-slate-800 mb-3 flex items-center justify-between">
+                            <span><i class="fa-solid fa-list-check text-slate-500 mr-1.5"></i> Desglose Histórico Mensual (Últimos 4 Meses)</span>
+                            <span class="text-[10px] text-slate-400 font-normal">Actualización en tiempo real</span>
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="monthly-history-cards">
+                            <!-- Card Mayo 2026 -->
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold text-slate-800">Mayo 2026</span>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded">Cerrado</span>
+                                </div>
+                                <div class="text-xs text-slate-600 space-y-1 font-mono">
+                                    <div class="flex justify-between"><span>Emitidos:</span> <strong class="text-emerald-600">+230,000</strong></div>
+                                    <div class="flex justify-between"><span>Canjeados:</span> <strong class="text-purple-600">-228,000</strong></div>
+                                    <div class="flex justify-between border-t border-slate-200 pt-1 text-[11px] font-extrabold text-slate-800"><span>Margen:</span> <span>+2,000 EB</span></div>
+                                </div>
+                            </div>
+                            <!-- Card Junio 2026 -->
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold text-slate-800">Junio 2026</span>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded">Cerrado</span>
+                                </div>
+                                <div class="text-xs text-slate-600 space-y-1 font-mono">
+                                    <div class="flex justify-between"><span>Emitidos:</span> <strong class="text-emerald-600">+220,000</strong></div>
+                                    <div class="flex justify-between"><span>Canjeados:</span> <strong class="text-purple-600">-218,000</strong></div>
+                                    <div class="flex justify-between border-t border-slate-200 pt-1 text-[11px] font-extrabold text-slate-800"><span>Margen:</span> <span>+2,000 EB</span></div>
+                                </div>
+                            </div>
+                            <!-- Card Julio 2026 -->
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold text-slate-800">Julio 2026</span>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded">Cerrado</span>
+                                </div>
+                                <div class="text-xs text-slate-600 space-y-1 font-mono">
+                                    <div class="flex justify-between"><span>Emitidos:</span> <strong class="text-emerald-600">+200,000</strong></div>
+                                    <div class="flex justify-between"><span>Canjeados:</span> <strong class="text-purple-600">-198,000</strong></div>
+                                    <div class="flex justify-between border-t border-slate-200 pt-1 text-[11px] font-extrabold text-slate-800"><span>Margen:</span> <span>+2,000 EB</span></div>
+                                </div>
+                            </div>
+                            <!-- Card Agosto 2026 -->
+                            <div class="p-4 bg-amber-50/50 border border-amber-200 rounded-xl">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold text-slate-900">Agosto 2026</span>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 bg-amber-100 text-amber-800 rounded animate-pulse">En curso</span>
+                                </div>
+                                <div class="text-xs text-slate-600 space-y-1 font-mono">
+                                    <div class="flex justify-between"><span>Emitidos:</span> <strong class="text-emerald-600">+127,900</strong></div>
+                                    <div class="flex justify-between"><span>Canjeados:</span> <strong class="text-purple-600">-118,420</strong></div>
+                                    <div class="flex justify-between border-t border-amber-200 pt-1 text-[11px] font-extrabold text-slate-800"><span>Margen:</span> <span class="text-amber-600">+9,480 EB</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EcoBit Trend Chart -->
+                    <div class="mb-6">
+                        <h3 class="text-xs font-bold text-slate-700 mb-3">Emisión vs Canje de EcoBits en el Gráfico</h3>
+                        <div class="h-60 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <canvas id="ecobitsTrendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Transaction Ledger Table -->
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xs font-bold text-slate-800">Movimientos Recientes en Vivo</h3>
+                            <button onclick="showToast('Filtrando transacciones')" class="text-xs text-slate-500 hover:text-slate-800">
+                                <i class="fa-solid fa-filter mr-1"></i> Filtrar
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-slate-100 text-slate-600 font-semibold">
+                                    <tr>
+                                        <th class="py-2.5 px-3">ID Transacción</th>
+                                        <th class="py-2.5 px-3">Fecha y Hora</th>
+                                        <th class="py-2.5 px-3">Usuario / Colaborador</th>
+                                        <th class="py-2.5 px-3">Origen / Entidad</th>
+                                        <th class="py-2.5 px-3">Destino / Centro Comercial</th>
+                                        <th class="py-2.5 px-3 text-right">Monto EcoBits</th>
+                                        <th class="py-2.5 px-3 text-center">Tipo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ecobits-ledger-tbody" class="divide-y divide-slate-100 font-mono text-[11px]">
+                                    <!-- Dynamic Ledger Content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- TAB 4: EMPRESAS E INSTITUCIONES AFILIADAS (SEGUIMIENTO ESPECÍFICO) -->
+            <div id="tab-empresas" class="tab-content hidden space-y-6">
+                
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-building"></i>
+                            <span>Portafolio Institucional & Corporativo</span>
+                        </div>
+                        <h2 class="text-xl font-extrabold text-slate-900">Seguimiento Específico por Entidad Afiliada</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">
+                            Supervisión detallada del tiempo de implementación (1 a 2 meses), avance operativo, reciclaje verificado y canal directo de comunicación.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <button onclick="openContactModal('GLOBAL', 'EcoBit Super Admin Support', 'general@ecobit.pe')" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl transition flex items-center space-x-2 shadow-sm">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Comunicado Masivo a Entidades</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 7 Institutions Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="enterprises-cards-grid">
+                    <!-- Populated dynamically by JS -->
+                </div>
+
+                <!-- Company Waste Bar Chart -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-sm font-bold text-slate-900 mb-4">Comparativa de Residuos Valorizados por Entidad (Toneladas)</h3>
+                    <div class="h-64">
+                        <canvas id="companyWasteBarChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 5: IMPACTO & CO2e EVITADO -->
+            <div id="tab-impacto" class="tab-content hidden space-y-6">
+                
+                <div class="bg-emerald-900 text-white p-6 rounded-2xl shadow-lg border border-emerald-800">
+                    <div class="flex items-center space-x-2 text-xs font-bold text-emerald-300 uppercase tracking-wider mb-2">
+                        <i class="fa-solid fa-tree"></i>
+                        <span>Equivalencias de Impacto Ambiental Real</span>
+                    </div>
+                    <h2 class="text-2xl font-black text-white">Impacto Ecológico Huancayo y Huancavelica</h2>
+                    <p class="text-xs text-emerald-200 mt-1 max-w-2xl">
+                        Factores de emisión calculados según estándares GHG Protocol con factores de conversión regional para el centro del Perú.
+                    </p>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                        <div class="bg-emerald-800/60 p-4 rounded-xl border border-emerald-700/50">
+                            <i class="fa-solid fa-tree text-2xl text-emerald-300 mb-2"></i>
+                            <div class="text-2xl font-black font-mono">6,736</div>
+                            <div class="text-[11px] text-emerald-200 mt-0.5">Árboles Maduros Equivalentes</div>
+                        </div>
+
+                        <div class="bg-emerald-800/60 p-4 rounded-xl border border-emerald-700/50">
+                            <i class="fa-solid fa-car text-2xl text-emerald-300 mb-2"></i>
+                            <div class="text-2xl font-black font-mono">367,500</div>
+                            <div class="text-[11px] text-emerald-200 mt-0.5">km en Auto Particular Evitados</div>
+                        </div>
+
+                        <div class="bg-emerald-800/60 p-4 rounded-xl border border-emerald-700/50">
+                            <i class="fa-solid fa-lightbulb text-2xl text-emerald-300 mb-2"></i>
+                            <div class="text-2xl font-black font-mono">194.5 MWh</div>
+                            <div class="text-[11px] text-emerald-200 mt-0.5">Energía Eléctrica Ahorrada</div>
+                        </div>
+
+                        <div class="bg-emerald-800/60 p-4 rounded-xl border border-emerald-700/50">
+                            <i class="fa-solid fa-faucet-drip text-2xl text-emerald-300 mb-2"></i>
+                            <div class="text-2xl font-black font-mono">1.82 M L</div>
+                            <div class="text-[11px] text-emerald-200 mt-0.5">Agua Conservada en Procesos</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 6: USUARIOS Y COLABORADORES -->
+            <div id="tab-usuarios" class="tab-content hidden space-y-6">
+                
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs font-bold text-indigo-600 uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-users"></i>
+                            <span>Padrón General de Usuarios (4,156 Colaboradores)</span>
+                        </div>
+                        <h2 class="text-lg font-bold text-slate-900">Directorio Completo de Colaboradores & Vecinos</h2>
+                        <p class="text-xs text-slate-500">Padrón unificado de 4,156 participantes activos en las 7 organizaciones de Huancayo y Huancavelica.</p>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="relative w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                            <input type="text" id="search-users" onkeyup="filterUsers()" placeholder="Buscar entre 4,156 usuarios por DNI..." class="w-full pl-8 pr-4 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+
+                        <select id="filter-user-entity" onchange="filterUsers()" class="text-xs bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <option value="ALL">Todas las Entidades (7)</option>
+                            <option value="Ecos Foundation">Ecos Foundation</option>
+                            <option value="ONG IDMA Huancavelica">ONG IDMA Huancavelica</option>
+                            <option value="Universidad Nacional de Huancavelica">UNH</option>
+                            <option value="Universidad Continental">Universidad Continental</option>
+                            <option value="APRODEH Huancavelica">APRODEH</option>
+                            <option value="Municipalidad Provincial de Huancavelica">Muni Hvca</option>
+                            <option value="Municipalidad Provincial de Huancayo">Muni Huancayo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <!-- High Volume Indicator Banner for Users -->
+                    <div class="p-3.5 bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between text-xs gap-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                            <span class="font-bold">Padrón Institucional: 4,156 Registros Validados</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400">Sincronizado con DNI & Código Institucional</span>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 border-b border-slate-200 text-xs text-slate-600 font-medium flex justify-between items-center">
+                        <span id="users-counter-text" class="font-bold text-slate-800">Mostrando registros 1 al 7 de 4,156 colaboradores</span>
+                        <span class="text-[11px] text-slate-400 font-mono">Página <strong id="user-page-num" class="text-slate-900">1</strong> de 347</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 text-slate-700 font-semibold uppercase text-[10px]">
+                                <tr>
+                                    <th class="py-3 px-4">DNI / Código</th>
+                                    <th class="py-3 px-4">Usuario / Colaborador</th>
+                                    <th class="py-3 px-4">Entidad Afiliada</th>
+                                    <th class="py-3 px-4">Área / Sede</th>
+                                    <th class="py-3 px-4 text-right">EcoBits Ganados</th>
+                                    <th class="py-3 px-4 text-right">Residuos Aportados</th>
+                                    <th class="py-3 px-4 text-center">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-sample-tbody" class="divide-y divide-slate-100">
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- "Ver Más" Users Expand & Page Controls -->
+                    <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-3">
+                        <span class="text-xs text-slate-500 font-mono">
+                            Total de la red: 4,156 colaboradores activos
+                        </span>
+                        
+                        <div class="flex items-center space-x-2">
+                            <button onclick="changeUserPage(-1)" class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-semibold hover:bg-slate-100 transition">
+                                &laquo; Anterior
+                            </button>
+
+                            <button id="btn-load-more-users" onclick="loadMoreUsers()" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2 rounded-lg transition shadow-sm flex items-center space-x-2">
+                                <i class="fa-solid fa-user-plus text-xs"></i>
+                                <span>Ver Más Usuarios Registrados (4,156 Totales)</span>
+                            </button>
+
+                            <button onclick="changeUserPage(1)" class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-semibold hover:bg-slate-100 transition">
+                                Siguiente &raquo;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- DIRECT CONTACT MODAL ("COMUNICARSE CON LA EMPRESA") -->
+    <div id="contact-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 relative">
+            <button onclick="closeContactModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <div>
+                    <h3 id="contact-modal-title" class="text-base font-extrabold text-slate-900">Comunicarse con la Entidad</h3>
+                    <p id="contact-modal-subtitle" class="text-xs text-slate-500">Canal directo Super Admin EcoBit</p>
+                </div>
+            </div>
+
+            <!-- Quick Action Options -->
+            <div class="grid grid-cols-2 gap-2 text-xs pt-2">
+                <a id="btn-whatsapp-direct" href="#" target="_blank" class="p-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-xl border border-emerald-200 text-center flex items-center justify-center space-x-2 transition">
+                    <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
+                    <span>Enviar WhatsApp</span>
+                </a>
+                <a id="btn-email-direct" href="#" class="p-2.5 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold rounded-xl border border-blue-200 text-center flex items-center justify-center space-x-2 transition">
+                    <i class="fa-solid fa-envelope text-blue-600 text-sm"></i>
+                    <span>Correo Directo</span>
+                </a>
+            </div>
+
+            <hr class="border-slate-100">
+
+            <!-- In-App Notification Message Form -->
+            <div class="space-y-3">
+                <label class="block text-xs font-bold text-slate-700">Enviar Notificación al Panel de la Entidad:</label>
+                <input type="text" id="contact-subject" placeholder="Asunto del mensaje o actualización..." class="w-full text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <textarea id="contact-body" rows="3" placeholder="Escriba aquí el comunicado oficial de Super Admin..." class="w-full text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+            </div>
+
+            <div class="pt-2 flex justify-end space-x-2">
+                <button onclick="closeContactModal()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs">
+                    Cancelar
+                </button>
+                <button onclick="sendContactMessage()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs transition shadow-sm flex items-center space-x-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Enviar Mensaje</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAILED COMPANY MODAL -->
+    <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex items-center space-x-2">
+                <span id="modal-badge" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-700">Enterprise</span>
+            </div>
+            <h3 id="modal-title" class="text-xl font-extrabold text-slate-900">Detalle de Entidad</h3>
+            <div id="modal-body" class="space-y-3 text-xs text-slate-600">
+                <!-- Dynamic body content -->
+            </div>
+            <div class="pt-2 flex justify-between items-center" id="modal-footer-actions">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast-msg" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 text-xs font-medium transition-all duration-300 transform translate-y-20 opacity-0 z-50 flex items-center space-x-2">
+        <i class="fa-solid fa-circle-info text-emerald-400"></i>
+        <span id="toast-text">Notificación de sistema</span>
+    </div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // EXACT 7 INSTITUTIONS DATASET WITH STATUS SUPPORT
+        const empresasData = [
+            {
+                id: 1,
+                nombre: "Ecos Foundation",
+                ubicacion: "Huancavelica / Huancayo",
+                rubro: "Fundación Sostenibilidad",
+                tiempoImplementacion: "2 meses",
+                mesesNum: 2,
+                fase: "Fase 2: Recolección Activa y Canje",
+                colaboradores: 650,
+                residuosKg: 21200.0,
+                co2eKg: 23500.0,
+                ecobitsBalance: 212000,
+                score: 94,
+                representante: "Lic. Andrea Morales",
+                correo: "contacto@ecosfoundation.org",
+                telefono: "964 123 456",
+                estado: "Activo"
+            },
+            {
+                id: 2,
+                nombre: "ONG IDMA Huancavelica",
+                ubicacion: "Huancavelica (Centro)",
+                rubro: "ONG Agroecología y Desarrollo",
+                tiempoImplementacion: "2 meses",
+                mesesNum: 2,
+                fase: "Fase 2: Recolección Activa y Canje",
+                colaboradores: 420,
+                residuosKg: 18500.0,
+                co2eKg: 20100.0,
+                ecobitsBalance: 185000,
+                score: 91,
+                representante: "Ing. Pedro Huamaní",
+                correo: "huancavelica@idma.org.pe",
+                telefono: "967 890 123",
+                estado: "Activo"
+            },
+            {
+                id: 3,
+                nombre: "Universidad Nacional de Huancavelica",
+                ubicacion: "Huancavelica (Paturpampa)",
+                rubro: "Educación Superior Pública",
+                tiempoImplementacion: "1 mes",
+                mesesNum: 1,
+                fase: "Fase 1: Mapeo y Capacitación Inicial",
+                colaboradores: 1120,
+                residuosKg: 28400.0,
+                co2eKg: 31000.0,
+                ecobitsBalance: 284000,
+                score: 89,
+                representante: "Dr. Walter Zevallos",
+                correo: "rsu@unh.edu.pe",
+                telefono: "967 456 789",
+                estado: "Activo"
+            },
+            {
+                id: 4,
+                nombre: "Universidad Continental",
+                ubicacion: "Huancayo (San Carlos)",
+                rubro: "Educación Superior Privada",
+                tiempoImplementacion: "2 meses",
+                mesesNum: 2,
+                fase: "Fase 2: Campus Verde Completo",
+                colaboradores: 1250,
+                residuosKg: 35800.0,
+                co2eKg: 38600.0,
+                ecobitsBalance: 358000,
+                score: 96,
+                representante: "Ing. Lucía Cárdenas",
+                correo: "sostenibilidad@continental.edu.pe",
+                telefono: "964 888 999",
+                estado: "Activo"
+            },
+            {
+                id: 5,
+                nombre: "APRODEH Huancavelica",
+                ubicacion: "Huancavelica (Barrio San Cristóbal)",
+                rubro: "Asociación Pro Derechos Humanos",
+                tiempoImplementacion: "1 mes",
+                mesesNum: 1,
+                fase: "Fase 1: Despliegue de Puntos Verdes",
+                colaboradores: 180,
+                residuosKg: 5200.0,
+                co2eKg: 5800.0,
+                ecobitsBalance: 52000,
+                score: 88,
+                representante: "Lic. Miguel Quispe",
+                correo: "huancavelica@aprodeh.org.pe",
+                telefono: "967 111 222",
+                estado: "Activo"
+            },
+            {
+                id: 6,
+                nombre: "Municipalidad Provincial de Huancavelica",
+                ubicacion: "Huancavelica (Plaza de Armas)",
+                rubro: "Gobierno Local / Gestión Ambiental",
+                tiempoImplementacion: "1 mes",
+                mesesNum: 1,
+                fase: "Fase 1: Programa Vecinal EcoBit",
+                colaboradores: 250,
+                residuosKg: 11400.0,
+                co2eKg: 12500.0,
+                ecobitsBalance: 114000,
+                score: 85,
+                representante: "Ing. Carlos Añaños",
+                correo: "ambiente@munihuancavelica.gob.pe",
+                telefono: "967 333 444",
+                estado: "Activo"
+            },
+            {
+                id: 7,
+                nombre: "Municipalidad Provincial de Huancayo",
+                ubicacion: "Huancayo (Centro)",
+                rubro: "Gobierno Local / Gestión Urbana",
+                tiempoImplementacion: "2 meses",
+                mesesNum: 2,
+                fase: "Fase 2: Red de Mercados y Comercios",
+                colaboradores: 286,
+                residuosKg: 16300.0,
+                co2eKg: 16700.0,
+                ecobitsBalance: 163000,
+                score: 90,
+                representante: "Mg. Roberto Taipe",
+                correo: "serviciosambientales@munihuancayo.gob.pe",
+                telefono: "964 555 666",
+                estado: "Activo"
+            }
+        ];
+
+        // EXPANDED COMMERCIAL CENTERS DATASET
+        const centrosComercialesData = [
+            { id: 101, nombre: "Real Plaza Huancayo", ciudad: "Huancayo", direccion: "Av. Ferrocarril 1035, El Tambo", representante: "Ing. Marco Antonio Quispe", canjesMes: 42850, beneficio: "15% Descuento en Tiendas & Cine", telefono: "(064) 248-900", ecobitsProcesados: 428500, estado: "Verificado" },
+            { id: 102, nombre: "Centro Comercial Manchego Muñoz", ciudad: "Huancavelica", direccion: "Av. Manchego Muñoz 452, Hvca", representante: "Lic. Rosa Elena Huamán", canjesMes: 18400, beneficio: "Vales de Compra Mercado Ecológico", telefono: "(067) 451-220", ecobitsProcesados: 184000, estado: "Verificado" },
+            { id: 103, nombre: "Open Plaza Huancayo", ciudad: "El Tambo", direccion: "Av. San Carlos 140, El Tambo", representante: "Mg. Carlos Alberto Palomino", canjesMes: 31200, beneficio: "2x1 Entradas y Vouchers Gastronómicos", telefono: "(064) 211-500", ecobitsProcesados: 312000, estado: "Verificado" },
+            { id: 104, nombre: "Centro Comercial Constitución", ciudad: "Huancayo", direccion: "Jr. Real 480, Huancayo Centro", representante: "Sra. Carmen Rosa Zevallos", canjesMes: 14500, beneficio: "10% Descuento en Ropa y Calzado", telefono: "(064) 234-110", ecobitsProcesados: 145000, estado: "Verificado" },
+            { id: 105, nombre: "Galerías Plaza Viamonte Huancavelica", ciudad: "Huancavelica", direccion: "Jr. Carabaya 180, Hvca", representante: "Lic. Víctor Manuel Añaños", canjesMes: 9800, beneficio: "Descuentos en Farmacias y Abarrotes", telefono: "(067) 452-990", ecobitsProcesados: 98000, estado: "Verificado" },
+            { id: 106, nombre: "Supermercado El Centro - Giráldez", ciudad: "Huancayo", direccion: "Av. Giráldez 240, Huancayo", representante: "Ing. Fernando Solís", canjesMes: 22100, beneficio: "Cupones acumulables de S/ 20 PEN", telefono: "(064) 229-800", ecobitsProcesados: 221000, estado: "Verificado" },
+            { id: 107, nombre: "Centro Comercial Yananaco", ciudad: "Huancavelica", direccion: "Av. Celestino Vargas 310, Yananaco", representante: "Dra. Gladys Cárdenas", canjesMes: 7600, beneficio: "Incentivos en Ferreterías y Hogar", telefono: "(067) 453-112", ecobitsProcesados: 76000, estado: "Verificado" },
+            { id: 108, nombre: "Mercado Mayorista de Huancayo Aliado", ciudad: "Chilca", direccion: "Av. Huancavelica s/n, Chilca", representante: "Sr. Jorge Luis Taipe", canjesMes: 28900, beneficio: "Descuento directo en Canasta Básica", telefono: "(064) 251-002", ecobitsProcesados: 289000, estado: "Verificado" },
+            { id: 109, nombre: "Galerías El Virrey Huancayo", ciudad: "Huancayo", direccion: "Jr. Calixto 320, Huancayo", representante: "Sr. Alejandro Ramos", canjesMes: 11200, beneficio: "Descuentos en Tecnología y Teléfonos", telefono: "(064) 221-440", ecobitsProcesados: 112000, estado: "Verificado" },
+            { id: 110, nombre: "Mercado Central de Huancavelica", ciudad: "Huancavelica", direccion: "Jr. Virrey Toledo 210, Hvca", representante: "Dña. Martha Paucar", canjesMes: 15300, beneficio: "Bonos en Frutas y Verduras Orgánicas", telefono: "(067) 451-880", ecobitsProcesados: 153000, estado: "Verificado" },
+            { id: 111, nombre: "Plaza Vea El Tambo", ciudad: "El Tambo", direccion: "Av. Mariscal Castilla 2200", representante: "Ing. Luis Mendoza", canjesMes: 34100, beneficio: "Puntos dobles en Tarjeta Vea", telefono: "(064) 241-990", ecobitsProcesados: 341000, estado: "Verificado" },
+            { id: 112, nombre: "CC Huancavelica Shopping Mall", ciudad: "Huancavelica", direccion: "Av. Santos Villa 512, San Cristóbal", representante: "Lic. Hernán Boza", canjesMes: 6400, beneficio: "Cupones en Panaderías y Cafeterías", telefono: "(067) 454-300", ecobitsProcesados: 64000, estado: "En Validación" },
+            { id: 113, nombre: "Galería Comercial Los Andes", ciudad: "Huancayo", direccion: "Jr. Ancash 610, Huancayo", representante: "Sra. Teresa Mayta", canjesMes: 8900, beneficio: "Vales de consumo en Librerías", telefono: "(064) 235-800", ecobitsProcesados: 89000, estado: "Verificado" },
+            { id: 114, nombre: "Mall del Centro Huancayo", ciudad: "Huancayo", direccion: "Av. Breña 180, Huancayo", representante: "Ing. Gonzalo Aliaga", canjesMes: 19800, beneficio: "20% en Gimnasios y Salud", telefono: "(064) 219-001", ecobitsProcesados: 198000, estado: "Verificado" },
+            { id: 115, nombre: "Bazar Comercial Santa Rosa", ciudad: "Huancavelica", direccion: "Jr. San Martín 140, Hvca", representante: "Dra. Lucila Bendezú", canjesMes: 5200, beneficio: "Descuentos en Artículos Escolares", telefono: "(067) 452-110", ecobitsProcesados: 52000, estado: "Verificado" }
+        ];
+
+        // EXPANDED USERS DATASET
+        const usuariosData = [
+            { dni: "70412389", nombre: "Juan Carlos Huamán Quispe", empresa: "Ecos Foundation", area: "Red Comunitaria Hvca", ecobits: "450", reciclado: "45.2 kg", ciudad: "Huancavelica", estado: "Activo" },
+            { dni: "41892311", nombre: "Rosa Maria Elena Añaños", empresa: "ONG IDMA Huancavelica", area: "Proyectos Agroecológicos", ecobits: "820", reciclado: "82.0 kg", ciudad: "Huancavelica", estado: "Activo" },
+            { dni: "20194822", nombre: "Pedro Miguel Solís", empresa: "Universidad Nacional de Huancavelica", area: "Campus Paturpampa (Docente)", ecobits: "310", reciclado: "31.5 kg", ciudad: "Huancavelica", estado: "Activo" },
+            { dni: "73219088", nombre: "Carmen Luz Cárdenas", empresa: "Universidad Continental", area: "Facultad de Ingeniería", ecobits: "290", reciclado: "29.0 kg", ciudad: "Huancayo", estado: "Activo" },
+            { dni: "45102933", nombre: "David Fernando Taipe", empresa: "APRODEH Huancavelica", area: "Equipo Técnico San Cristóbal", ecobits: "640", reciclado: "64.1 kg", ciudad: "Huancavelica", estado: "Activo" },
+            { dni: "71029384", nombre: "Gonzalo Alarcón", empresa: "Municipalidad Provincial de Huancavelica", area: "Gerencia Gestión Ambiental", ecobits: "510", reciclado: "51.0 kg", ciudad: "Huancavelica", estado: "Activo" },
+            { dni: "42910299", nombre: "Sonia Fernández", empresa: "Municipalidad Provincial de Huancayo", area: "Subgerencia Ecología urbana", ecobits: "380", reciclado: "38.5 kg", ciudad: "Huancayo", estado: "Activo" },
+            { dni: "74839201", nombre: "Mateo Alexander Boza", empresa: "Ecos Foundation", area: "Logística Huancayo", ecobits: "720", reciclado: "72.4 kg", ciudad: "Huancayo", estado: "Activo" },
+            { dni: "20918273", nombre: "Esther Quispe Palomino", empresa: "ONG IDMA Huancavelica", area: "Coordinación Campo", ecobits: "940", reciclado: "94.0 kg", ciudad: "Huancavelica", estado: "Activo" },
+            { dni: "71829304", nombre: "Lourdes Bendezú Reyes", empresa: "Universidad Nacional de Huancavelica", area: "Estudiante Agronomía", ecobits: "190", reciclado: "19.2 kg", ciudad: "Huancavelica", estado: "Activo" },
+            { dni: "76102938", nombre: "Diego Alonso Paucar", empresa: "Universidad Continental", area: "Campus San Carlos", ecobits: "530", reciclado: "53.0 kg", ciudad: "Huancayo", estado: "Activo" },
+            { dni: "43920192", nombre: "Patricia Mayta Boza", empresa: "Municipalidad Provincial de Huancayo", area: "Fiscalización Ambiental", ecobits: "410", reciclado: "41.8 kg", ciudad: "Huancayo", estado: "Activo" }
+        ];
+
+        // REALTIME LEDGER MOVEMENTS
+        let ecobitsLedger = [
+            { id: "TX-9941", fecha: "18 Ago 2026 14:22", user: "Juan C. Huamán", origen: "Ecos Foundation", destino: "Real Plaza Huancayo", monto: "-120 EB", tipo: "Canje Mall" },
+            { id: "TX-9940", fecha: "18 Ago 2026 13:50", user: "María E. Quispe", origen: "ONG IDMA Hvca", destino: "CC Manchego Muñoz", monto: "-250 EB", tipo: "Canje Local" },
+            { id: "TX-9939", fecha: "18 Ago 2026 12:15", user: "Pedro Añaños", origen: "Univ. Nac. Huancavelica", destino: "Reciclaje PET (12.5 kg)", monto: "+125 EB", tipo: "Generación" },
+            { id: "TX-9938", fecha: "18 Ago 2026 11:04", user: "Rosa Luz Solís", origen: "Univ. Continental", destino: "Open Plaza Huancayo", monto: "-150 EB", tipo: "Canje Mall" },
+            { id: "TX-9937", fecha: "18 Ago 2026 09:30", user: "David Taipe", origen: "Muni Huancayo", destino: "Reciclaje Cartón (30 kg)", monto: "+300 EB", tipo: "Generación" },
+            { id: "TX-9936", fecha: "17 Ago 2026 18:45", user: "Lucía Cárdenas", origen: "Muni Huancavelica", destino: "CC Yananaco (Hvca)", monto: "-90 EB", tipo: "Canje Local" }
+        ];
+
+        // GLOBAL STATE AND CHART INSTANCES
+        let mallVisibleCount = 8;
+        let userVisibleCount = 7;
+        let mallPage = 1;
+        let userPage = 1;
+        let activeContactEntity = null;
+        let chartInstances = {};
+
+        // REAL-TIME SYNCHRONIZATION FUNCTION (TRIGGERED ON "ACTUALIZAR Y SINCRONIZAR")
+        let liveWasteKg = 136800.0;
+        let liveCO2eKg = 148200.0;
+        let txCounter = 9942;
+
+        function syncDataInRealTime() {
+            const refreshIcon = document.getElementById('refresh-icon');
+            if (refreshIcon) refreshIcon.classList.add('fa-spin');
+
+            // Increment values slightly
+            const addedWaste = Math.floor(Math.random() * 25) + 12; // +12 to 36 kg
+            const addedCO2 = Math.round(addedWaste * 1.15 * 10) / 10;
+            const addedEcobits = addedWaste * 10;
+
+            liveWasteKg += addedWaste;
+            liveCO2eKg += addedCO2;
+
+            // Update main KPI cards
+            const wasteTons = (liveWasteKg / 1000).toFixed(1);
+            const co2Tons = (liveCO2eKg / 1000).toFixed(1);
+
+            const wasteEl = document.getElementById('kpi-waste-val');
+            if (wasteEl) wasteEl.innerHTML = `${wasteTons} <span class="text-xs font-normal text-slate-600">t</span>`;
+            const wasteBadge = document.getElementById('card-waste-badge');
+            if (wasteBadge) wasteBadge.innerText = `${wasteTons} t`;
+
+            const co2El = document.getElementById('kpi-co2-val');
+            if (co2El) co2El.innerHTML = `${co2Tons} <span class="text-xs font-normal text-slate-600">t</span>`;
+            const co2Badge = document.getElementById('card-co2-badge');
+            if (co2Badge) co2Badge.innerText = `${co2Tons} t`;
+
+            // Add new transaction to live ledger
+            const usersList = ["Carlos Zevallos", "Ana María Boza", "Gabriel Taipe", "Sonia Huamán"];
+            const originsList = ["Univ. Continental", "Ecos Foundation", "UNH Paturpampa", "Muni Huancavelica"];
+            const mallysList = ["Real Plaza Huancayo", "Open Plaza", "CC Manchego Muñoz", "Plaza Vea Tambo"];
+            
+            const randomUser = usersList[Math.floor(Math.random() * usersList.length)];
+            const randomOrigin = originsList[Math.floor(Math.random() * originsList.length)];
+            const randomMall = mallysList[Math.floor(Math.random() * mallysList.length)];
+
+            const newTx = {
+                id: `TX-${txCounter++}`,
+                fecha: "18 Ago 2026 " + new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }),
+                user: randomUser,
+                origen: randomOrigin,
+                destino: randomMall,
+                monto: `-${addedEcobits} EB`,
+                tipo: "Canje Mall"
+            };
+
+            ecobitsLedger.unshift(newTx);
+            renderEcobitsLedger();
+            renderLiveRedemptions();
+
+            setTimeout(() => {
+                if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+                showToast(`Data sincronizada: +${addedWaste} kg de residuos y +${addedEcobits} EB procesados`);
+            }, 600);
+        }
+
+        // TAB NAVIGATION LOGIC
+        function switchTab(tabId) {
+            // Hide all tab contents
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(t => t.classList.add('hidden'));
+
+            // Remove nav-active from all nav buttons
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => btn.classList.remove('nav-active'));
+
+            // Show current tab
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if (targetTab) targetTab.classList.remove('hidden');
+
+            // Set active class on nav button
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) activeBtn.classList.add('nav-active');
+
+            // Titles map
+            const titlesMap = {
+                'resumen': { title: 'Consolidado General EcoBit', subtitle: 'Monitoreo en tiempo real de entidades afiliadas, red de canjes y huella ecológica evitada.' },
+                'empresas': { title: 'Seguimiento de Empresas e Instituciones', subtitle: 'Avance detallado por entidad en Huancayo y Huancavelica.' },
+                'centros': { title: 'Directorio de Centros Comerciales Aliados', subtitle: '1,240 establecimientos afiliados para redención de EcoBits.' },
+                'ecobits': { title: 'Movimiento y Economía EcoBits', subtitle: 'Histórico de emisión por reciclaje y consumo regional.' },
+                'impacto': { title: 'Impacto & CO2e Evitado Consolidado', subtitle: 'Métricas de carbono e indicadores ambientales regionales.' },
+                'usuarios': { title: 'Padrón de Usuarios y Colaboradores', subtitle: 'Directorio unificado de 4,156 participantes activos.' }
+            };
+
+            if (titlesMap[tabId]) {
+                document.getElementById('current-page-title').innerText = titlesMap[tabId].title;
+                document.getElementById('current-page-subtitle').innerText = titlesMap[tabId].subtitle;
+            }
+
+            // Resize chart instances on tab change
+            setTimeout(() => {
+                Object.values(chartInstances).forEach(chart => {
+                    if (chart && typeof chart.resize === 'function') {
+                        chart.resize();
+                    }
+                });
+            }, 100);
+        }
+
+        // TOGGLE COMPANY STATUS (ACTIVAR / DESACTIVAR)
+        function toggleCompanyStatus(id) {
+            const company = empresasData.find(e => e.id === id);
+            if (!company) return;
+
+            company.estado = company.estado === 'Activo' ? 'Desactivado' : 'Activo';
+            renderEnterpriseCards();
+            renderTopCompanies();
+
+            const statusText = company.estado === 'Activo' ? 'ACTIVADA' : 'DESACTIVADA';
+            showToast(`La entidad "${company.nombre}" ha sido ${statusText} en el sistema EcoBit.`);
+        }
+
+        // RENDER ENTERPRISE CARDS WITH "COMUNICARSE" AND "ACTIVAR / DESACTIVAR"
+        function renderEnterpriseCards() {
+            const container = document.getElementById('enterprises-cards-grid');
+            if (!container) return;
+            container.innerHTML = empresasData.map(emp => `
+                <div class="bg-white rounded-2xl border ${emp.estado === 'Activo' ? 'border-slate-200' : 'border-red-200 bg-red-50/20'} shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition">
+                    <div>
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider">${emp.rubro}</span>
+                                <h3 class="text-base font-bold text-slate-900 leading-tight mt-0.5">${emp.nombre}</h3>
+                                <span class="text-xs text-slate-500 flex items-center mt-1">
+                                    <i class="fa-solid fa-location-dot text-red-500 mr-1.5 text-xs"></i> ${emp.ubicacion}
+                                </span>
+                            </div>
+                            <div class="flex flex-col items-end gap-1">
+                                <span class="px-2 py-0.5 rounded ${emp.estado === 'Activo' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'} text-[10px] font-bold uppercase">
+                                    ● ${emp.estado}
+                                </span>
+                                <span class="text-[10px] font-mono font-bold text-slate-500">${emp.tiempoImplementacion}</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 p-2 bg-slate-50 rounded-lg border border-slate-200 text-[11px] text-slate-700 flex items-center justify-between">
+                            <span class="font-semibold text-slate-800"><i class="fa-solid fa-spinner text-teal-500 mr-1 ${emp.estado === 'Activo' ? 'animate-spin' : ''}"></i> Etapa:</span>
+                            <span class="text-teal-700 font-medium">${emp.fase}</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 my-4 py-3 border-y border-slate-100 text-xs">
+                            <div>
+                                <span class="text-slate-400 text-[10px] block">Colaboradores</span>
+                                <span class="font-black text-slate-800 text-sm">${emp.colaboradores.toLocaleString()}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 text-[10px] block">Residuos Valorizados</span>
+                                <span class="font-black text-emerald-600 text-sm">${(emp.residuosKg / 1000).toFixed(1)} t</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 text-[10px] block">CO2e Evitado</span>
+                                <span class="font-black text-teal-600 text-sm">${(emp.co2eKg / 1000).toFixed(1)} t</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 text-[10px] block">EcoBits Generados</span>
+                                <span class="font-black text-amber-500 text-sm font-mono">${(emp.ecobitsBalance / 1000).toFixed(1)}k</span>
+                            </div>
+                        </div>
+
+                        <div class="text-[11px] text-slate-600 space-y-1">
+                            <div><strong>Contacto Responsable:</strong> ${emp.representante}</div>
+                            <div><strong>Correo:</strong> ${emp.correo}</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                        <button onclick="openContactModal('${emp.id}', '${emp.nombre}', '${emp.correo}', '${emp.telefono}')" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 shadow-sm">
+                            <i class="fa-solid fa-comments"></i>
+                            <span>Comunicarse</span>
+                        </button>
+
+                        <button onclick="toggleCompanyStatus(${emp.id})" class="text-xs ${emp.estado === 'Activo' ? 'bg-slate-100 hover:bg-red-100 text-slate-700 hover:text-red-700 border border-slate-300' : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'} font-bold px-2.5 py-1.5 rounded-lg transition">
+                            ${emp.estado === 'Activo' ? '<i class="fa-solid fa-power-off text-red-500 mr-1"></i> Desactivar' : '<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Activar'}
+                        </button>
+
+                        <button onclick="openCompanyModal(${emp.id})" class="text-xs bg-slate-900 hover:bg-slate-800 text-white font-semibold px-2.5 py-1.5 rounded-lg transition">
+                            Seguimiento
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // RENDER TOP COMPANIES TABLE WITH STATUS
+        function renderTopCompanies() {
+            const tbody = document.getElementById('top-companies-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = empresasData.map(emp => `
+                <tr class="hover:bg-slate-50/80 transition">
+                    <td class="py-2.5 px-3">
+                        <div class="font-bold text-slate-800">${emp.nombre}</div>
+                        <div class="text-[10px] text-slate-500">${emp.rubro}</div>
+                    </td>
+                    <td class="py-2.5 px-3 text-slate-600">${emp.ubicacion}</td>
+                    <td class="py-2.5 px-3 text-center font-bold text-slate-700">${emp.colaboradores.toLocaleString()}</td>
+                    <td class="py-2.5 px-3 text-right font-mono font-semibold text-emerald-600">${emp.residuosKg.toLocaleString()} kg</td>
+                    <td class="py-2.5 px-3 text-center">
+                        <div class="flex items-center justify-center space-x-1">
+                            <button onclick="openContactModal('${emp.id}', '${emp.nombre}', '${emp.correo}', '${emp.telefono}')" class="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-lg border border-emerald-200 transition text-[10px] inline-flex items-center gap-1">
+                                <i class="fa-solid fa-comments"></i>
+                                <span>Comunicar</span>
+                            </button>
+                            <button onclick="toggleCompanyStatus(${emp.id})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition text-[10px]">
+                                ${emp.estado === 'Activo' ? 'Desactivar' : 'Activar'}
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // PAGINATION CONTROLS FOR MALLS
+        function changeMallPage(delta) {
+            mallPage = Math.max(1, mallPage + delta);
+            document.getElementById('mall-page-num').innerText = mallPage;
+            renderMallsTable();
+            showToast(`Cargando página ${mallPage} de establecimientos`);
+        }
+
+        function loadMoreMalls() {
+            mallVisibleCount += 5;
+            renderMallsTable();
+            showToast("Cargando más comercios aliados...");
+        }
+
+        function filterMalls() {
+            renderMallsTable();
+        }
+
+        // RENDER MALLS TABLE WITH HIGH VOLUME COUNTER
+        function renderMallsTable() {
+            const tbody = document.getElementById('malls-tbody');
+            if (!tbody) return;
+
+            const query = (document.getElementById('search-malls')?.value || '').toLowerCase();
+            const city = document.getElementById('filter-mall-city')?.value || 'ALL';
+            const status = document.getElementById('filter-mall-status')?.value || 'ALL';
+
+            let filtered = centrosComercialesData.filter(m => {
+                const matchesQuery = m.nombre.toLowerCase().includes(query) || 
+                                     m.direccion.toLowerCase().includes(query) || 
+                                     m.representante.toLowerCase().includes(query);
+                const matchesCity = city === 'ALL' || m.ciudad === city;
+                const matchesStatus = status === 'ALL' || m.estado === status;
+                return matchesQuery && matchesCity && matchesStatus;
+            });
+
+            const visibleSlice = filtered.slice(0, mallVisibleCount);
+
+            tbody.innerHTML = visibleSlice.map(m => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="py-3 px-4">
+                        <div class="font-bold text-slate-900 text-xs">${m.nombre}</div>
+                        <div class="text-[10px] text-purple-600 font-medium">${m.beneficio}</div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <div class="text-slate-700 font-medium">${m.ciudad}</div>
+                        <div class="text-[10px] text-slate-400">${m.direccion}</div>
+                    </td>
+                    <td class="py-3 px-4 text-slate-700 font-medium">${m.representante}</td>
+                    <td class="py-3 px-4 text-center font-mono text-slate-600">${m.telefono}</td>
+                    <td class="py-3 px-4 text-right font-bold text-slate-800 font-mono">${m.canjesMes.toLocaleString()}</td>
+                    <td class="py-3 px-4 text-right font-bold text-purple-700 font-mono">${m.ecobitsProcesados.toLocaleString()} EB</td>
+                    <td class="py-3 px-4 text-center">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${m.estado === 'Verificado' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                            ✓ ${m.estado}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Update Counter Text showing huge list
+            const counterEl = document.getElementById('malls-counter-text');
+            if (counterEl) {
+                counterEl.innerText = `Mostrando registros 1 al ${visibleSlice.length} de 1,240 establecimientos comerciales en la red`;
+            }
+        }
+
+        // USER PAGINATION CONTROLS
+        function changeUserPage(delta) {
+            userPage = Math.max(1, userPage + delta);
+            document.getElementById('user-page-num').innerText = userPage;
+            renderUsersSample();
+            showToast(`Cargando página ${userPage} del padrón de usuarios`);
+        }
+
+        function loadMoreUsers() {
+            userVisibleCount += 5;
+            renderUsersSample();
+            showToast("Cargando más colaboradores...");
+        }
+
+        function filterUsers() {
+            renderUsersSample();
+        }
+
+        // RENDER USERS SAMPLE WITH HIGH VOLUME IMPRESSION
+        function renderUsersSample() {
+            const tbody = document.getElementById('users-sample-tbody');
+            if (!tbody) return;
+
+            const query = (document.getElementById('search-users')?.value || '').toLowerCase();
+            const entityFilter = document.getElementById('filter-user-entity')?.value || 'ALL';
+
+            let filtered = usuariosData.filter(u => {
+                const matchesQuery = u.nombre.toLowerCase().includes(query) || 
+                                     u.dni.includes(query) || 
+                                     u.area.toLowerCase().includes(query);
+                const matchesEntity = entityFilter === 'ALL' || u.empresa === entityFilter;
+                return matchesQuery && matchesEntity;
+            });
+
+            const visibleSlice = filtered.slice(0, userVisibleCount);
+
+            tbody.innerHTML = visibleSlice.map(u => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="py-2.5 px-3 font-mono font-semibold text-slate-500">${u.dni}</td>
+                    <td class="py-2.5 px-3 font-bold text-slate-800">${u.nombre}</td>
+                    <td class="py-2.5 px-3 text-slate-600">${u.empresa}</td>
+                    <td class="py-2.5 px-3 text-slate-500">${u.area}</td>
+                    <td class="py-2.5 px-3 text-right font-mono font-bold text-amber-500">${u.ecobits} EB</td>
+                    <td class="py-2.5 px-3 text-right font-bold text-emerald-600">${u.reciclado}</td>
+                    <td class="py-2.5 px-3 text-center">
+                        <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-bold">
+                            ✓ ${u.estado}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+
+            const counterEl = document.getElementById('users-counter-text');
+            if (counterEl) {
+                counterEl.innerText = `Mostrando ${visibleSlice.length} de 4,156 usuarios registrados en el padrón consolidado`;
+            }
+
+            const loadMoreBtn = document.getElementById('btn-load-more-users');
+            if (loadMoreBtn) {
+                if (userVisibleCount >= filtered.length) {
+                    loadMoreBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    loadMoreBtn.innerText = "Padrón Completo Visualizado";
+                } else {
+                    loadMoreBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    loadMoreBtn.innerHTML = `<i class="fa-solid fa-user-plus text-xs"></i> <span>Ver Más Usuarios Registrados (${filtered.length - userVisibleCount} más)</span>`;
+                }
+            }
+        }
+
+        // RENDER LIVE REDEMPTIONS
+        function renderLiveRedemptions() {
+            const container = document.getElementById('live-redemptions-container');
+            if (!container) return;
+
+            const recent3 = ecobitsLedger.slice(0, 3);
+            container.innerHTML = recent3.map(tx => `
+                <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
+                    <div>
+                        <div class="font-bold text-slate-800">${tx.user}</div>
+                        <div class="text-[10px] text-slate-500">${tx.origen} &rarr; <span class="text-purple-600 font-semibold">${tx.destino}</span></div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-mono font-bold ${tx.monto.startsWith('+') ? 'text-emerald-600' : 'text-purple-600'}">${tx.monto}</div>
+                        <div class="text-[9px] text-slate-400">${tx.fecha.split(' ')[3] || ''}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // RENDER ECOBITS LEDGER TABLE
+        function renderEcobitsLedger() {
+            const tbody = document.getElementById('ecobits-ledger-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = ecobitsLedger.map(tx => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="py-2.5 px-3 font-bold text-slate-700">${tx.id}</td>
+                    <td class="py-2.5 px-3 text-slate-500">${tx.fecha}</td>
+                    <td class="py-2.5 px-3 font-bold text-slate-800">${tx.user}</td>
+                    <td class="py-2.5 px-3 text-slate-600">${tx.origen}</td>
+                    <td class="py-2.5 px-3 text-slate-600">${tx.destino}</td>
+                    <td class="py-2.5 px-3 text-right font-bold ${tx.monto.startsWith('+') ? 'text-emerald-600' : 'text-purple-600'}">${tx.monto}</td>
+                    <td class="py-2.5 px-3 text-center">
+                        <span class="px-2 py-0.5 rounded text-[9px] font-bold ${tx.monto.startsWith('+') ? 'bg-emerald-100 text-emerald-800' : 'bg-purple-100 text-purple-800'}">
+                            ${tx.tipo}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ECOBITS PERIOD FILTER
+        function filterEcobitsPeriod(period) {
+            const genEl = document.getElementById('stat-ecobits-generated');
+            const redEl = document.getElementById('stat-ecobits-redeemed');
+            
+            if (period === 'MAY_26') {
+                if (genEl) genEl.innerText = '+230,000';
+                if (redEl) redEl.innerText = '-228,000';
+            } else if (period === 'JUN_26') {
+                if (genEl) genEl.innerText = '+220,000';
+                if (redEl) redEl.innerText = '-218,000';
+            } else if (period === 'JUL_26') {
+                if (genEl) genEl.innerText = '+200,000';
+                if (redEl) redEl.innerText = '-198,000';
+            } else if (period === 'AGO_26') {
+                if (genEl) genEl.innerText = '+127,900';
+                if (redEl) redEl.innerText = '-118,420';
+            } else {
+                if (genEl) genEl.innerText = '+777,900';
+                if (redEl) redEl.innerText = '-762,420';
+            }
+            showToast(`Filtro de periodo actualizado`);
+        }
+
+        // OPEN CONTACT MODAL ("COMUNICARSE CON LA EMPRESA")
+        function openContactModal(id, nombre, correo, telefono = "964 000 000") {
+            activeContactEntity = { id, nombre, correo, telefono };
+
+            const titleEl = document.getElementById('contact-modal-title');
+            if (titleEl) titleEl.innerText = `Comunicarse con: ${nombre}`;
+            const subEl = document.getElementById('contact-modal-subtitle');
+            if (subEl) subEl.innerText = `Contacto directo: ${correo} | Tel: ${telefono}`;
+
+            const waBtn = document.getElementById('btn-whatsapp-direct');
+            if (waBtn) waBtn.href = `https://wa.me/51${telefono.replace(/\s+/g, '')}?text=Hola%20${encodeURIComponent(nombre)},%20te%20contactamos%20desde%20el%20Super%20Admin%20de%20EcoBit.`;
+            
+            const mailBtn = document.getElementById('btn-email-direct');
+            if (mailBtn) mailBtn.href = `mailto:${correo}?subject=Comunicado%20Oficial%20EcoBit%20Master`;
+
+            const modal = document.getElementById('contact-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeContactModal() {
+            const modal = document.getElementById('contact-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function sendContactMessage() {
+            const subject = document.getElementById('contact-subject').value;
+            const body = document.getElementById('contact-body').value;
+
+            if (!subject || !body) {
+                showToast("Por favor complete el asunto y el mensaje.");
+                return;
+            }
+
+            showToast(`Mensaje enviado con éxito a ${activeContactEntity ? activeContactEntity.nombre : 'la entidad'}`);
+            document.getElementById('contact-subject').value = '';
+            document.getElementById('contact-body').value = '';
+            closeContactModal();
+        }
+
+        // OPEN SPECIFIC COMPANY MODAL WITH IMPLEMENTATION TRACKING
+        function openCompanyModal(id) {
+            const emp = empresasData.find(e => e.id === id);
+            if (!emp) return;
+
+            const badge = document.getElementById('modal-badge');
+            if (badge) {
+                badge.innerText = `Seguimiento de Implementación (${emp.tiempoImplementacion})`;
+                badge.className = "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-700";
+            }
+            
+            const title = document.getElementById('modal-title');
+            if (title) title.innerText = emp.nombre;
+
+            const body = document.getElementById('modal-body');
+            if (body) {
+                body.innerHTML = `
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div><strong class="text-slate-500">Categoría:</strong> ${emp.rubro}</div>
+                            <div><strong class="text-slate-500">Sede:</strong> ${emp.ubicacion}</div>
+                            <div><strong class="text-slate-500">Colaboradores/Usuarios:</strong> ${emp.colaboradores}</div>
+                            <div><strong class="text-slate-500">Tiempo Plataforma:</strong> <span class="font-bold text-blue-600">${emp.tiempoImplementacion}</span></div>
+                        </div>
+                        <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-800 font-semibold">
+                            Etapa Actual: ${emp.fase}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-center">
+                        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                            <span class="text-[10px] text-emerald-800 font-semibold block">Total Residuos Valorizados</span>
+                            <span class="text-lg font-black text-emerald-700">${(emp.residuosKg / 1000).toFixed(1)} t</span>
+                        </div>
+                        <div class="p-3 bg-teal-50 border border-teal-200 rounded-xl">
+                            <span class="text-[10px] text-teal-800 font-semibold block">Emisiones CO2e Evitadas</span>
+                            <span class="text-lg font-black text-teal-700">${(emp.co2eKg / 1000).toFixed(1)} t</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <span class="font-bold text-slate-800 block text-xs">Bitácora de Seguimiento de Implementación:</span>
+                        <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-4">
+                            <li><strong>Mes 1:</strong> Registro de padrón de ${emp.colaboradores} usuarios, colocación de contenedores EcoBit y enlace con centros comerciales aliados.</li>
+                            ${emp.mesesNum === 2 ? `<li><strong>Mes 2:</strong> Consolidación de hábitos de reciclaje, emisión de ${(emp.ecobitsBalance / 1000).toFixed(0)}k EcoBits y aceleración de canjes regionales.</li>` : ''}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            const footer = document.getElementById('modal-footer-actions');
+            if (footer) {
+                footer.innerHTML = `
+                    <button onclick="openContactModal('${emp.id}', '${emp.nombre}', '${emp.correo}', '${emp.telefono}'); closeModal();" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs flex items-center space-x-1.5">
+                        <i class="fa-solid fa-comments"></i>
+                        <span>Comunicarse con la Empresa</span>
+                    </button>
+
+                    <button onclick="closeModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-xs">
+                        Cerrar Detalle
+                    </button>
+                `;
+            }
+
+            const modal = document.getElementById('detail-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detail-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // TOAST NOTIFICATION HELPER
+        function showToast(message) {
+            const toast = document.getElementById('toast-msg');
+            const toastText = document.getElementById('toast-text');
+            if (!toast || !toastText) return;
+
+            toastText.innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // INIT ALL CHARTS SAFELY
+        function initCharts() {
+            const canvasWaste = document.getElementById('wasteChart');
+            if (canvasWaste && !chartInstances.waste) {
+                chartInstances.waste = new Chart(canvasWaste.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Feb 26', 'Mar 26', 'Abr 26', 'May 26', 'Jun 26', 'Jul 26', 'Ago 26'],
+                        datasets: [
+                            {
+                                label: 'Residuos Generados (kg)',
+                                data: [12000, 28000, 32000, 35000, 31000, 24000, 18000],
+                                borderColor: '#ef4444',
+                                backgroundColor: 'rgba(239, 68, 68, 0.05)',
+                                fill: true,
+                                tension: 0.35,
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Residuos Valorizados (kg)',
+                                data: [8500, 22000, 27000, 31000, 28000, 20300, 15000],
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                fill: true,
+                                tension: 0.35,
+                                borderWidth: 2.5
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+                        scales: {
+                            y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 } } },
+                            x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                        }
+                    }
+                });
+            }
+
+            const canvasMaterial = document.getElementById('materialDoughnutChart');
+            if (canvasMaterial && !chartInstances.material) {
+                chartInstances.material = new Chart(canvasMaterial.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Orgánicos (Compost)', 'Cartón y Papel', 'Plástico PET', 'Plástico HDPE', 'Otros Inorgánicos'],
+                        datasets: [{
+                            data: [54800, 36800, 24500, 12200, 8500],
+                            backgroundColor: ['#10b981', '#f59e0b', '#3b82f6', '#06b6d4', '#64748b'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'right', labels: { font: { size: 10 } } } },
+                        cutout: '65%'
+                    }
+                });
+            }
+
+            const canvasEcobitsTrend = document.getElementById('ecobitsTrendChart');
+            if (canvasEcobitsTrend && !chartInstances.ecobitsTrend) {
+                chartInstances.ecobitsTrend = new Chart(canvasEcobitsTrend.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mayo 2026', 'Junio 2026', 'Julio 2026', 'Agosto 2026'],
+                        datasets: [
+                            {
+                                label: 'EcoBits Emitidos (Reciclaje)',
+                                data: [230000, 220000, 200000, 127900],
+                                backgroundColor: '#10b981',
+                                borderRadius: 6
+                            },
+                            {
+                                label: 'EcoBits Canjeados (Malls)',
+                                data: [228000, 218000, 198000, 118420],
+                                backgroundColor: '#8b5cf6',
+                                borderRadius: 6
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+                        scales: {
+                            y: { grid: { color: '#e2e8f0' }, ticks: { font: { size: 10 } } },
+                            x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                        }
+                    }
+                });
+            }
+
+            const canvasCompanyWaste = document.getElementById('companyWasteBarChart');
+            if (canvasCompanyWaste && !chartInstances.companyWaste) {
+                chartInstances.companyWaste = new Chart(canvasCompanyWaste.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Univ. Continental', 'UNH', 'Ecos Foundation', 'ONG IDMA', 'Muni Huancayo', 'Muni Hvca', 'APRODEH'],
+                        datasets: [{
+                            label: 'Toneladas Valorizadas',
+                            data: [35.8, 28.4, 21.2, 18.5, 16.3, 11.4, 5.2],
+                            backgroundColor: '#10b981',
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { grid: { color: '#e2e8f0' }, ticks: { font: { size: 10 } } },
+                            x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // ENTRY POINT ON DOM LOADED
+        window.onload = function() {
+            renderTopCompanies();
+            renderLiveRedemptions();
+            renderEnterpriseCards();
+            renderMallsTable();
+            renderEcobitsLedger();
+            renderUsersSample();
+            initCharts();
+        };
+    </script>
+</body>
+</html>
